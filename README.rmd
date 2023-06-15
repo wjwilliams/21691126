@@ -6,19 +6,32 @@ output:
 
 # Purpose
 
-Purpose of this work folder.
-
-Ideally store a minimum working example data set in data folder.
-
-Add binary files in bin, and closed R functions in code. Human Readable settings files (e.g. csv) should be placed in settings/
+This is the final README, it is a compilation of all the questions.
 
 
 ```{r}
 
 rm(list = ls()) # Clean your environment:
 gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
+
+#NB load the tidyverse
 library(tidyverse)
+
+#Loading all the code from all 5 locations, this enables me to use all the functions that I have created for all of the seperate Questions
 list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+list.files('Question1/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question2/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question3/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 ```
 
+#Question 1
 
+
+#Question 2
+
+
+#Question 3
+
+
+#Question 4

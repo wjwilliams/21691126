@@ -299,6 +299,8 @@ best movies use to market themselves and what the most popular themes
 among audiences. Clearly movies about love, friends and family are the
 most popular.
 
+![WordCloud](wordcloud.png)
+
 # Question 5
 
 ## Ratings and Positive Reviews by Category

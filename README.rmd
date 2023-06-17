@@ -324,11 +324,11 @@ Lastly I show a wordcloud of the most popular words in descriptions of movies th
 
 ```{r}
 
-# wc<-wordcloud_plotter(netflix)
-# wc
-
+ wc<-wordcloud_plotter(netflix)
+ 
+#Unfortunately i needed to save it as a png 
 ```
-
+![WordCloud](wordcloud.png)
 
 # Question 5
 ```{r}

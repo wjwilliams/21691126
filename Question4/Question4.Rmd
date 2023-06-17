@@ -113,7 +113,8 @@ Lastly I show a wordcloud of the most popular words in descriptions of movies th
 ```{r  warning =  FALSE, fig.align = 'center', fig.cap = "Frequency of Words in Top Movie Descriptions\\label{Figure2}", fig.ext = 'png', fig.height = 7, fig.width = 10}
 
 wc<-wordcloud_plotter(netflix)
-wc
+
 
 ```
 
+![WordCloud](wordcloud.png)

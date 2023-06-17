@@ -1,0 +1,123 @@
+---
+title: "Question 5: Google Play"
+documentclass: elsarticle
+Thesis_FP: no
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    keep_tex: yes
+    template: Tex/TexDefault.txt
+    fig_width: 3.5
+    fig_height: 3.5
+Author1: Wesley Williams
+Ref1: Stellenbosch University
+Email1: 21691126\@sun.ac.za
+BottomRFooter: \footnotesize Page \thepage
+addtoprule: yes
+addfootrule: yes
+margin: 2.3
+bottom: 2
+top: 2.5
+HardSet_layout: yes
+linenumbers: no
+bibliography: Tex/ref.bib
+csl: "Tex/harvard-stellenbosch-university.csl"
+RemovePreprintSubmittedTo: yes
+toc: no
+numbersections: yes
+fontsize: 14pt
+linestretch: 1.2
+link-citations: yes
+AddTitle: yes
+abstract: |
+  Abstract to be written here. 
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
+# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
+# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
+
+# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+library(xtable)
+library(lubridate)
+library(glue)
+library(cowplot)
+library(RColorBrewer)
+library(viridis)  
+
+list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+#load in the data
+review <- read.csv("data/googleplay/googleplaystore_user_reviews.csv")
+google <- read.csv("data/googleplay/googleplaystore.csv")
+
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+## Ratings and Positive Reviews by Category
+If you want to create an App it is very important that as soon after its inception it gets as many reviews and ratings as possible but you also want high ratings and positive reviews. This will help your App gain momentum as people are more likely to download your App if it has already been rated and reviewed as it creates a sense of trust. Below I have created the average reviews and positive ratings by category. I limited it to the top 50% of downloads as I wanted to only imvestigate sucessful Apps. From this i would recommend an App under the Art and Design category as those apps get rated the most highly and have the most positive reviews. 
+
+```{r}
+#First lets get a date
+google <-google %>% 
+    mutate(date = mdy(Last.Updated))
+
+
+
+
+#Lets see the average installs and then we only want to look at the top half
+#we first need to get the installs to dbl
+downloads <- google %>% 
+    group_by(Type)%>% 
+    mutate(download = as.numeric(gsub("[,\\+]", "", Installs))) %>% 
+    summarise(avg_down = mean(download))
+#the average download is 9387454 for free apps  and 77439.49 for paid apps but we only want to look at above average apps
+good_apps<- google %>% 
+    filter(!is.na(Installs), !is.na(Type)) %>% 
+    mutate(download = as.numeric(gsub("[,\\+]", "", Installs))) %>% 
+    filter(ifelse(Type == "Free", download > 8657758, download >  77439.49))
+
+#now lets combine the datasets
+# unique(review$Sentiment)
+
+reviews <- review %>% 
+    group_by(App) %>% 
+    filter(!grepl("nan", Sentiment), !is.na(Sentiment)) %>% 
+    summarise(pos_sentiment = sum(Sentiment == "Positive")/n() ) 
+
+combined <- left_join(good_apps, reviews, by = "App") %>% 
+    filter(!is.na(pos_sentiment))
+
+```
+
+
+```{r warning =  FALSE, fig.align = 'center', fig.cap = "Ratings and Reviews by Category\\label{Figure1}", fig.ext = 'png', fig.height = 10, fig.width = 10}
+
+
+cb<-category_barplotter(combined)
+cb
+```
+## Does App Size affect Downloads and Ratings?
+The next step in the optimization process of the app is determining how large it should be. It os a highly common in the modern era to delete Apps that are rather large to ensure your device has sufficient memory. The table below shows the correlation of size with downloads and ratings this information can help evaluate the trade-off between size, functionality and scope of your App. Following from my recommendation above, Art and design applications are downloaded more if they are larger and there is no large correlation between the Rating and the size so I would recommend ensuring functionality and scope of the App as the size is of little concern as people do not seem deterred from downloading apps in this genre if they are large.
+```{r results='asis'}
+
+
+ct<- correl_tabler(google, Latex = FALSE)
+ct
+    
+```
+

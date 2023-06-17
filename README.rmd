@@ -2,7 +2,6 @@
 output:
   md_document:
     variant: markdown_github
-always_allow_html: true
 ---
 
 # Purpose
@@ -323,10 +322,10 @@ gp
 
 Lastly I show a wordcloud of the most popular words in descriptions of movies that have a audience rating of more than 7. This shows what the best movies use to market themselves and what the most popular themes among audiences. Clearly movies about love, friends and family are the most popular.
 
-```{r  warning =  FALSE, fig.align = 'center', fig.cap = "Frequency of Words in Top Movie Descriptions\\label{Figure2}", fig.ext = 'png', fig.height = 7, fig.width = 10}
+```{r}
 
-wc<-wordcloud_plotter(netflix)
-wc
+# wc<-wordcloud_plotter(netflix)
+# wc
 
 ```
 

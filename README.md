@@ -299,12 +299,6 @@ best movies use to market themselves and what the most popular themes
 among audiences. Clearly movies about love, friends and family are the
 most popular.
 
-<div class="wordcloud2 html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-17e3910ec27b176d4044" style="width:960px;height:672px;"></div>
-<script type="application/json" data-for="htmlwidget-17e3910ec27b176d4044">{"x":{"word":["love","family","school","documentary","friends","home","special","comedy","best","children","personal","war","relationship","mysterious","American","music","power","legendary","powerful","adventure","romantic","violent","drama","emotional","original","romance","action","brutal","mystery","inspiring","ordinary","charismatic","moving","Family","brilliant","controversial","dramatic","horror","intense","provocative","thriller","Death","Love","bloody","fascinating","groundbreaking","heartfelt","historical","insightful","thrilling","absorbing","captivating","comical","compelling","exceptional","exhilarating","fantasy","gripping","innovative","intriguing","masterful","mind-bending","outstanding","sensitive","sentimental","suspenseful","touching","unforgettable","uproarious"],"freq":[91,75,51,49,47,42,40,33,30,29,28,28,25,24,23,21,21,17,15,13,12,11,10,8,8,7,6,6,6,5,5,4,4,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-dark","minSize":0,"weightFactor":1.97802197802198,"backgroundColor":"white","gridSize":0,"minRotation":-0.785398163397448,"maxRotation":0.785398163397448,"shuffle":true,"rotateRatio":0.4,"shape":"square","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
-<p class="caption">
-Frequency of Words in Top Movie Descriptions
-</p>
-
 # Question 5
 
 ## Ratings and Positive Reviews by Category

@@ -2,7 +2,79 @@
 
 This is the final README, it is a compilation of all the questions.
 
+``` r
+rm(list = ls()) # Clean your environment:
+gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
+```
+
+    ##          used (Mb) gc trigger (Mb) limit (Mb) max used (Mb)
+    ## Ncells 463822 24.8     990544   53         NA   669322 35.8
+    ## Vcells 866077  6.7    8388608   64      16384  1839981 14.1
+
+``` r
+#NB load the tidyverse
+library(tidyverse)
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+    ## ✔ ggplot2 3.4.0     ✔ purrr   1.0.1
+    ## ✔ tibble  3.2.1     ✔ dplyr   1.1.0
+    ## ✔ tidyr   1.3.0     ✔ stringr 1.5.0
+    ## ✔ readr   2.1.4     ✔ forcats 0.5.2
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+
+``` r
+#Loading all the code from all 5 locations, this enables me to use all the functions that I have created for all of the seperate Questions
+list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+list.files('Question1/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+list.files('Question2/code/', full.names = T, recursive = T)%>% .[grepl('.R', .)]  %>% as.list() %>% walk(~source(.))
+list.files('Question3/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+list.files('Question4/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+list.files('Question5/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+```
+
 # Question 1
+
+``` r
+library(tidyverse)
+library(xtable)
+library(lubridate)
+```
+
+    ## Loading required package: timechange
+
+    ## 
+    ## Attaching package: 'lubridate'
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     date, intersect, setdiff, union
+
+``` r
+library(glue)
+library(ggplot2)
+library(cowplot)
+```
+
+    ## 
+    ## Attaching package: 'cowplot'
+
+    ## The following object is masked from 'package:lubridate':
+    ## 
+    ##     stamp
+
+``` r
+library(rmsfuns)
+
+#Source my code/funcrions
+list.files('Question/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+#First lets load the data in
+
+covid <- read.csv("Question1/data/Covid/owid-covid-data.csv")
+deaths <- read.csv("Question1/data/Covid/Deaths_by_cause.csv")
+```
 
 ## Africa and Covid
 
@@ -26,6 +98,26 @@ America on the other hand was effected the most and as I show later this
 can be partially attributed to the the lack of change in hospital
 facilities.
 
+``` r
+ep1 <- evolutionplotter(covid)
+```
+
+    ## `summarise()` has grouped output by 'date'. You can override using the
+    ## `.groups` argument.
+
+``` r
+ep2 <- evolutionplotter2(covid)
+```
+
+    ## `summarise()` has grouped output by 'date'. You can override using the
+    ## `.groups` argument.
+
+``` r
+bothplots <- plot_grid(ep1, ep2, ncol = 1)
+
+bothplots
+```
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-2-1.png" alt="Evolution of COVID\label{Figure1}"  />
 <p class="caption">
 Evolution of COVID
@@ -44,6 +136,19 @@ smaller rate of smokers compared to the rest of the world. The table
 shows that the death rates due to respitory illness (which is what Covid
 is) increased at a much higher rate for top smoking countries. This
 shows that smoking definitely did increase the dangers of Covid.
+
+``` r
+SmokerTable <- smoker_death_tabular(covid, Latex = FALSE, CountryList = c("Greece", "Russia", "Montenegro", "Ghana", "Ethiopia", "Nigeria"))
+```
+
+    ## `summarise()` has grouped output by 'date'. You can override using the
+    ## `.groups` argument.
+    ## `summarise()` has grouped output by 'year'. You can override using the
+    ## `.groups` argument.
+
+``` r
+SmokerTable
+```
 
 | year |  Ghana | Ethiopia | Nigeria |   Russia |  Greece | Montenegro |
 |-----:|-------:|---------:|--------:|---------:|--------:|-----------:|
@@ -68,6 +173,17 @@ thousand of people was constant throughout the whole pandemic which
 definitely contributed to being effected the worst out of all the
 continents.
 
+``` r
+h <- ICU_Plotter(covid)
+```
+
+    ## `summarise()` has grouped output by 'continent'. You can override using the
+    ## `.groups` argument.
+
+``` r
+h
+```
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-4-1.png" alt="Evolution of Hospitals\label{Figure2}"  />
 <p class="caption">
 Evolution of Hospitals
@@ -75,11 +191,47 @@ Evolution of Hospitals
 
 # Question 2
 
+``` r
+library(tidyverse)
+library(xtable)
+library(lubridate)
+library(glue)
+library(cowplot)
+
+list.files('Question2/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+#read in the data
+london <- read.csv("Question2/data/London/london_weather.csv")
+UK <- read.csv("Question2/data/London/UKMonthly_Detailed.csv")
+
+#First I need to make sure the date is in the right format using lubridate
+weather <- london %>% 
+    mutate(date = ymd(date))
+```
+
 ## Is the weather better in the midlands of England or London?
 
 Let’s start with temperature, The graphs below show that not only does
 London have better weather than the midlands, but the maximum
 temperature in both places is still colder than Cape town.
+
+``` r
+tp <-Temp_plotter(weather, place ="London")
+
+
+#Lets compare this to the midlands where she wants to move
+#First letss limit the sample to just the last 50 years
+#names(UK) #get the names in the console fot ease of comparison to the pdf doc
+temp <- UK %>% 
+    mutate(date = ym(DATE)) %>% 
+    select(date, TAVG, TMAX, TMIN) %>% 
+    rename("mean_temp" ="TAVG", "min_temp" = "TMIN","max_temp" = "TMAX") #rename so we can use the previous function
+tp2 <-Temp_plotter(temp, place ="Midlands")
+
+bothplots <- plot_grid(tp, tp2, ncol = 1)
+
+bothplots
+```
 
 <img src="README_files/figure-markdown_github/Figure1-1.png" alt="London Tempreture\label{Figure1}"  />
 <p class="caption">
@@ -95,6 +247,13 @@ year (2014) since 1978. Not only that but the rate of sunshine seems to
 be decreasing over time as well. So it is pretty much colder, more
 cloudy and more miserable.
 
+``` r
+hs<-hist_sun_plotter(weather)
+hs
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
 <img src="README_files/figure-markdown_github/Figure2-1.png" alt="London is getting less and less sunshine \label{Figure2}"  />
 <p class="caption">
 London is getting less and less sunshine
@@ -109,6 +268,11 @@ because it barely rains but in London its going to be cold in winter,
 and then in summer it is just going to rain. I hope you find a lovely
 house if you do move because you are going to be spending most of your
 time inside.
+
+``` r
+rt <- raintable(weather, Latex = FALSE)
+rt
+```
 
 | Month     |    London | Cape Town |
 |:----------|----------:|----------:|
@@ -130,21 +294,66 @@ London vs Cape Town Monthly Rainfall
 
 # Question 3
 
+``` r
+library(tidyverse)
+library(xtable)
+library(lubridate)
+library(ggplot2)
+library(glue)
+library(cowplot)
+library(rmsfuns)
+
+#Source my code/funcrions
+list.files('Question3/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+#Read in the data
+cold <- read.csv("Question3/data/Coldplay_vs_Metallica/Coldplay.csv")
+cold <- cold %>% 
+    rename("album" = "album_name")
+metal <- read.csv("Question3/data/Coldplay_vs_Metallica/Metallica.csv")
+spotify <- read.csv("Question3/data/Coldplay_vs_Metallica/Broader_Spotify_Info.csv")
+```
+
 # Popularity by album
 
 The two figures below show that Coldplay’s discography is slightly more
 volatile than Metallica’s in terms of popularity but overall are more
 popular.
 
+``` r
+#Firstly lets make a function to get the boxplots for both bands
+
+
+  
+coldbp<-box_plotter(cold, Band = "Coldplay")
+coldbp
+```
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-8-1.png" alt="Coldplay\label{Figure1}"  />
 <p class="caption">
 Coldplay
 </p>
 
+``` r
+metalbp<-box_plotter(metal, Band = "Metallica")
+metalbp
+```
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-9-1.png" alt="Metallics\label{Figure2}"  />
 <p class="caption">
 Metallics
 </p>
+
+``` r
+#I think Linkin Park is a fantastic example of a Band that has chnaged what they do and are still popular
+
+# linkin <- spotify %>%
+#     filter(artist == "Linkin Park") %>%
+#     select(energy,)
+
+#Now lets look at how energy relates to popularity
+ #unfortunatly there is no popularity score for LINKIN PARK
+```
 
 ## Components of each Band: What drives Their Popularity?
 
@@ -155,6 +364,32 @@ Metallica’s songs are clusered close to 1. Coldplay seem to have an
 optimal energy level of between 0.4 and 0.6 and Metalica is more popular
 between 0.75 and 1.
 
+``` r
+ #now lets look at the factors that can influence the popularity, Metallica is a metal band so i would expect tempo and energy to be a prominant factor whereas i would expect coldplay to rely on energy and liveness, first i need to combine the data
+
+cold1 <- cold %>% 
+    mutate(Band = "Coldplay") %>% 
+    select(release_date, name, album, popularity, energy, danceability, tempo, valence, Band) %>% 
+            filter(!grepl("Remaster", album),!grepl("Box Set", album), !grepl("Live", album), !grepl("Live", name))
+
+
+metal1 <- metal %>% 
+    mutate(Band = "Mettalica") %>% 
+    select(release_date, name, album, popularity, energy, danceability, tempo, valence, Band) %>% 
+            filter(!grepl("Remaster", album),!grepl("Box Set", album), !grepl("Live", album), !grepl("Live", name))
+
+
+battle <- bind_rows(cold1, metal1)
+    
+#Now i want to look at the popularity vs energy and then get different colours and a line for each
+
+
+ep <- correl_energy_plotter(battle)
+ep
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-11-1.png" alt="Metallics\label{Figure3}"  />
 <p class="caption">
 Metallics
@@ -164,6 +399,13 @@ Next looking at tempo, again Coldplay is more diverse with their songs
 ranging from 60 beats per minute to over 200 whereas Metallica only
 ranges from 75 to just under 200. Metallica’s popularity increases with
 Tempo.
+
+``` r
+tp <-correl_tempo_plotter(battle)
+tp
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
 
 <img src="README_files/figure-markdown_github/unnamed-chunk-12-1.png" alt="Metallics\label{Figure4}"  />
 <p class="caption">
@@ -179,6 +421,13 @@ subject matter. Coldplay is more popular with lowe levels so their most
 popular songs are more sad songs and Metalica’s popularity increases
 with valence so their more upbeat songs are more popular on average.
 
+``` r
+vp <- correl_valence_plotter(battle)
+vp
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-13-1.png" alt="Metallics\label{Figure5}"  />
 <p class="caption">
 Metallics
@@ -188,6 +437,11 @@ Metallics
 most popular songs seem to have more energy through the years.
 Coldplay’s tempo seems to decrease over time wheras Metallica’s tempo
 has been relatibely constant.
+
+``` r
+pop_table <- table_popular(battle, Latex = FALSE)
+pop_table
+```
 
 | year | Band      | name                        | album                                                       | popularity | energy | danceability |   tempo | valence |
 |---:|:-----|:------------|:-------------------------|-----:|---:|------:|----:|----:|
@@ -219,12 +473,48 @@ Most popular songs each year
 
 # Question 4
 
+``` r
+library(tidyverse)
+library(lubridate)
+library(glue)
+library(xtable)
+library(RColorBrewer)
+
+
+#Source my code/funcrions
+list.files('Question4/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+#read in the data
+credits <- read.csv("Question4/data/netflix/credits.csv")
+title <- read.csv("Question4/data/netflix/titles.csv")
+```
+
 # Best Actors and Directors
+
+``` r
+#Lets try and merge the data to do this I want to get the credits data into a long format with the row for each movie/series
+check<-unique(credits$role)
+#There are only actors and directors so I need to differentiate between them 
+credit <- credits %>% 
+  group_by(id) %>% 
+  summarise(actors = paste(name[role == "ACTOR"], collapse = ", "),
+            directors = paste(name[role == "DIRECTOR"], collapse = ", "),
+            .groups = "drop")
+
+#Now i can left join the credits to the title
+netflix <- left_join(title, credit, by = "id")
+# Now i have a merged data set with the actors and directors and i want to look at which actors and directors are associated with the top movies
+```
 
 Below are tables of actors that on average have the best average critic
 ratings and audience ratings. It would be beneficial to have any movies
 that has these actors and directors as they are likely to be the most
 highest rated movies.
+
+``` r
+toptable <-top_table(netflix, Latex = FALSE)
+toptable
+```
 
 | directors              | IMDB Critic Score | actors             | IMDB Critic Score |
 |:--------------------|----------------:|:-----------------|----------------:|
@@ -250,6 +540,13 @@ highest rated movies.
 | Aamir Khan             |              8.30 | Byron Minns        |               8.8 |
 
 Top Actors and Directors
+
+``` r
+#Lets also do it for audience scores
+
+aud_top<-audience_top_table(netflix, Latex = FALSE)
+aud_top
+```
 
 | directors            | IMDB Audience Score | actors             | IMDB audience Score |
 |:------------------|-----------------:|:----------------|-----------------:|
@@ -286,6 +583,11 @@ about popularity I would suggest animation, sci-fi fantasy, western and
 action. I think the best movies to have are war movies as they are the
 best of both worlds.
 
+``` r
+gp<-Genre_plotter(netflix)
+gp
+```
+
 <img src="README_files/figure-markdown_github/unnamed-chunk-19-1.png" alt="Popularity and Ratings by Grenre\label{Figure1}"  />
 <p class="caption">
 Popularity and Ratings by Grenre
@@ -299,9 +601,35 @@ best movies use to market themselves and what the most popular themes
 among audiences. Clearly movies about love, friends and family are the
 most popular.
 
+``` r
+ wc<-wordcloud_plotter(netflix)
+ 
+#Unfortunately i needed to save it as a png 
+```
+
 ![WordCloud](wordcloud.png)
 
 # Question 5
+
+``` r
+library(tidyverse)
+library(xtable)
+library(lubridate)
+library(glue)
+library(cowplot)
+library(RColorBrewer)
+library(viridis)  
+```
+
+    ## Loading required package: viridisLite
+
+``` r
+list.files('Question5/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+#load in the data
+review <- read.csv("Question5/data/googleplay/googleplaystore_user_reviews.csv")
+google <- read.csv("Question5/data/googleplay/googleplaystore.csv")
+```
 
 ## Ratings and Positive Reviews by Category
 
@@ -315,6 +643,43 @@ limited it to the top 50% of downloads as I wanted to only imvestigate
 sucessful Apps. From this i would recommend an App under the Art and
 Design category as those apps get rated the most highly and have the
 most positive reviews.
+
+``` r
+#First lets get a date
+google <-google %>% 
+    mutate(date = mdy(Last.Updated))
+
+
+
+
+#Lets see the average installs and then we only want to look at the top half
+#we first need to get the installs to dbl
+downloads <- google %>% 
+    group_by(Type)%>% 
+    mutate(download = as.numeric(gsub("[,\\+]", "", Installs))) %>% 
+    summarise(avg_down = mean(download))
+#the average download is 9387454 for free apps  and 77439.49 for paid apps but we only want to look at above average apps
+good_apps<- google %>% 
+    filter(!is.na(Installs), !is.na(Type)) %>% 
+    mutate(download = as.numeric(gsub("[,\\+]", "", Installs))) %>% 
+    filter(ifelse(Type == "Free", download > 8657758, download >  77439.49))
+
+#now lets combine the datasets
+# unique(review$Sentiment)
+
+reviews <- review %>% 
+    group_by(App) %>% 
+    filter(!grepl("nan", Sentiment), !is.na(Sentiment)) %>% 
+    summarise(pos_sentiment = sum(Sentiment == "Positive")/n() ) 
+
+combined <- left_join(good_apps, reviews, by = "App") %>% 
+    filter(!is.na(pos_sentiment))
+```
+
+``` r
+cb<-category_barplotter(combined)
+cb
+```
 
 <img src="README_files/figure-markdown_github/unnamed-chunk-23-1.png" alt="Ratings and Reviews by Category\label{Figure1}"  />
 <p class="caption">
@@ -334,6 +699,19 @@ larger and there is no large correlation between the Rating and the size
 so I would recommend ensuring functionality and scope of the App as the
 size is of little concern as people do not seem deterred from
 downloading apps in this genre if they are large.
+
+``` r
+ct<- correl_tabler(google, Latex = FALSE)
+```
+
+    ## Warning: There was 1 warning in `mutate()`.
+    ## ℹ In argument: `size = as.numeric(gsub("M", "", Size))`.
+    ## Caused by warning:
+    ## ! NAs introduced by coercion
+
+``` r
+ct
+```
 
 | Genres                  | Downloads | Rating |
 |:------------------------|:----------|:-------|
